@@ -45,4 +45,5 @@ public abstract class Tweet {
     public Date getDate() {
         return this.date = date;
     }
+
 }

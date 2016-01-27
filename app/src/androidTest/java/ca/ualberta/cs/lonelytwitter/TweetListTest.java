@@ -49,7 +49,7 @@ public class TweetListTest extends ActivityInstrumentationTestCase2 {
         tweets.add(tweet);
         Tweet returnedTweet = tweets.getTweet(0);
 
-        assertEquals(returnedTweet.getMessage(),tweet.getMessage());
+        assertEquals(returnedTweet.getMessage(), tweet.getMessage());
         assertEquals(returnedTweet.getDate(),tweet.getDate());
 
 
