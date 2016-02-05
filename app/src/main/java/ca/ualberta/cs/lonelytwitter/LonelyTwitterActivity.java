@@ -1,3 +1,6 @@
+/**
+ * Provides files for the application
+ */
 package ca.ualberta.cs.lonelytwitter;
 
 import java.io.BufferedReader;
@@ -70,7 +73,6 @@ public class LonelyTwitterActivity extends Activity {
 	 * This starts the next activity which is blah blah.
 	 * @param intent This is the intent to be run immediately after hitting "start" button.
 	 */
-
 	private void startSecondActivity(Intent intent){
 		//
 	}
@@ -86,6 +88,11 @@ public class LonelyTwitterActivity extends Activity {
 		return "";
 	}
 
+	/**
+	 * This evaluates the next activity
+	 * @param intent This is the intent to be run
+	 * @return
+	 */
 	public boolean evaluateSecondActivity(Intent intent){
 		int count = 0;
 		String s = "";
@@ -117,6 +124,9 @@ public class LonelyTwitterActivity extends Activity {
 		return true;
 	}
 
+	/**
+	 * This implements the filename
+	 */
 	private static final String FILENAME = "file.sav";
 	private EditText bodyText;
 	private ListView oldTweetsList;
@@ -124,7 +134,10 @@ public class LonelyTwitterActivity extends Activity {
 	private ArrayList<Tweet> tweets = new ArrayList<Tweet>();
 	private ArrayAdapter<Tweet> adapter;
 
-	/** Called when the activity is first created. */
+	/**
+	 * This is called when the activity is first created
+	 * @param savedInstanceState
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -135,6 +148,9 @@ public class LonelyTwitterActivity extends Activity {
 		Button clearButton = (Button) findViewById(R.id.clear);
 		oldTweetsList = (ListView) findViewById(R.id.oldTweetsList);
 
+		/**
+		 * Implementation of the save button
+		 */
 		saveButton.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View v) {
@@ -152,6 +168,9 @@ public class LonelyTwitterActivity extends Activity {
 			}
 		});
 
+		/**
+		 * Implementation of the clear button
+		 */
 		clearButton.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View v) {
@@ -163,6 +182,9 @@ public class LonelyTwitterActivity extends Activity {
 		});
 	}
 
+	/**
+	 * This is called when the activity starts
+	 */
 	@Override
 	protected void onStart() {
 		// TODO Auto-generated method stub
@@ -174,6 +196,10 @@ public class LonelyTwitterActivity extends Activity {
 		oldTweetsList.setAdapter(adapter);
 	}
 
+	/**
+	 * This loads tweets from files
+	 * <p>It loads the tweets from the json files.</p>
+	 */
 	private void loadFromFile() {
 		try {
 			FileInputStream fis = openFileInput(FILENAME);
@@ -193,6 +219,10 @@ public class LonelyTwitterActivity extends Activity {
 		}
 	}
 
+	/**
+	 * This saves tweets in files
+	 * <p>It saves the input tweets in the json files.</p>
+	 */
 	private void saveInFile() {
 		try {
 			FileOutputStream fos = openFileOutput(FILENAME,
