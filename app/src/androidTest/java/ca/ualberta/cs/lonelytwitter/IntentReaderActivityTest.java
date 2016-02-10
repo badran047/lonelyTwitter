@@ -56,9 +56,6 @@ public class IntentReaderActivityTest extends ActivityInstrumentationTestCase2{
 
     //TODO: Add your code here ...
 //-------------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------------
-
     public void testReverseText(){
         Intent intent = new Intent();
         intent.putExtra(IntentReaderActivity.TEXT_TO_TRANSFORM_KEY, "message 4");
@@ -70,13 +67,13 @@ public class IntentReaderActivityTest extends ActivityInstrumentationTestCase2{
         assertEquals("The text should be reversed!", "4 egassem", ira.getText());
     }
 
-    public void testDefaultMessage(){
-
+    public void testDefaultMessage() {
+;
     }
 
-    public void testTextViewDisplay(){
-        
-    }
+    public void testTextViewVisibility(){
 
+    }
+//-------------------------------------------------------------------------------
 
 }
