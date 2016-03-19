@@ -3,7 +3,6 @@ package ca.ualberta.cs.lonelytwitter;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -46,12 +45,25 @@ public class LonelyTwitterActivity extends Activity {
         bodyText = (EditText) findViewById(R.id.tweetMessage);
         oldTweetsList = (ListView) findViewById(R.id.tweetsList);
 
+        ElasticsearchTweetController.GetTweetsTask getTweetsTask = new ElasticsearchTweetController.GetTweetsTask();
+//        getTweetsTask.execute("test");
+        getTweetsTask.execute("");
+        try {
+            tweets = new ArrayList<Tweet>();
+            tweets.addAll(getTweetsTask.get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        adapter = new TweetAdapter(this, tweets);
+        oldTweetsList.setAdapter(adapter);
 
         pictureButton = (ImageButton) findViewById(R.id.pictureButton);
-        pictureButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View view){
+        pictureButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (intent.resolveActivity(getPackageManager()) != null){
+                if (intent.resolveActivity(getPackageManager()) != null) {
                     startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
                 }
             }
@@ -68,8 +80,6 @@ public class LonelyTwitterActivity extends Activity {
 
                 latestTweet.addThumbnail(thumbnail);
 
-                adapter.notifyDataSetChanged();
-
                 // Add the tweet to Elasticsearch
                 ElasticsearchTweetController.AddTweetTask addTweetTask = new ElasticsearchTweetController.AddTweetTask();
                 addTweetTask.execute(latestTweet);
@@ -79,20 +89,44 @@ public class LonelyTwitterActivity extends Activity {
                 thumbnail = null;
 
                 setResult(RESULT_OK);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                ElasticsearchTweetController.GetTweetsTask getTweetsTask = new ElasticsearchTweetController.GetTweetsTask();
+                getTweetsTask.execute("");
+                try {
+                    ArrayList<NormalTweet> temp = new ArrayList<NormalTweet>();
+                    temp = new ArrayList<NormalTweet>();
+                    temp = getTweetsTask.get();
+                    tweets.clear();
+                    tweets.addAll(getTweetsTask.get());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+//        adapter = new ArrayAdapter<Tweet>(this, R.layout.list_item, tweets);
+                // Binds tweet list with view, so when our array updates, the view updates with it
+                adapter.notifyDataSetChanged();
             }
         });
+
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        // Get the latest tweets from Elasticsearch
         ElasticsearchTweetController.GetTweetsTask getTweetsTask = new ElasticsearchTweetController.GetTweetsTask();
-//        getTweetsTask.execute("test");
         getTweetsTask.execute("");
         try {
-            tweets = new ArrayList<Tweet>();
+            ArrayList<NormalTweet> temp = new ArrayList<NormalTweet>();
+            temp = new ArrayList<NormalTweet>();
+            temp = getTweetsTask.get();
+            tweets.clear();
             tweets.addAll(getTweetsTask.get());
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -102,17 +136,20 @@ public class LonelyTwitterActivity extends Activity {
 
 //        adapter = new ArrayAdapter<Tweet>(this, R.layout.list_item, tweets);
         // Binds tweet list with view, so when our array updates, the view updates with it
-        adapter = new TweetAdapter(this, tweets); /* NEW! */
         oldTweetsList.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+//        adapter = new ArrayAdapter<Tweet>(this, R.layout.list_item, tweets);
+        // Binds tweet list with view, so when our array updates, the view updates with it
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
-            Bundle extras = data.getExtras();
+            Bundle extras = data .getExtras();
             thumbnail = (Bitmap) extras.get("data");
             pictureButton.setImageBitmap(thumbnail);
         }
     }
-
 }
